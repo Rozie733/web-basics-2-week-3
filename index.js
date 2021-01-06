@@ -23,67 +23,73 @@ const battleship = () => {
                [0, 0, 0, 0]]
   };
  
- function randNum () {
-   return Math.floor(Math.random()*3 + 1);
-  
- }
+  function randNum () {
+    return Math.floor(Math.random()*3) + 1;
+   
+  }
+
  player1.name = prompt("What is your name player1?");
  player2.name = prompt("What is your name player2?");
  
   
- 
- let shipsAdded = 1;
- while(shipsAdded < 9) {
-    
- 
-    let cord1 = player1.gameBoard[randNum()][randNum()]; 
-    let cord2 = player2.gameBoard[randNum()][randNum()];
-    
-   
-    if (cord1 !== 1) {
-    cord1 = 1;
-     shipsAdded++;
+ /*to establish the ships on boards
+ @param maximum ships per board and the current player
+ @return a console table 
+ */
+
+ function addShips(maxShips, player){
+   let i = 0;
+  while (i < maxShips){
+    let cordX = randNum();
+    let cordY = randNum();
+    let cord = player.gameBoard[cordX][cordY];
+    if (cord !== 1) {
+      player.gameBoard[cordX][cordY] = 1; 
+     i++;
     }
- 
-    if (cord2 !== 1) {
-     cord2 = 1;
-    shipsAdded++;
-   }
-  
+  }
+   console.table(player.gameBoard);
  }
- 
+ addShips(4, player1);
+ addShips(4, player2);
+
+
+  let message = "";
    let i = 2;
-   let currentPlayer;
+   let offensePlayer;
+   let defensePlayer;
  
    do{
      let j = i%2;
      
      if (j === 0 ){
-       currentPlayer = player1;
+       offensePlayer = player1;
+       defensePlayer = player2;
        i++;
      }
      else if (j === 1){
-       currentPlayer = player2;
+       offensePlayer = player2;
+       defensePlayer = player1
        i--;
      }
-     let strikeXHere = prompt(`Choose an x-value (0-3) to strike ${currentPlayer.name}.`);
-     let strikeYHere = prompt(`Choose an y-value (0-3) to strike ${currentPlayer.name}.`);
+     alert(`offense: ${offensePlayer.name} and defense: ${defensePlayer.name}`)
+     let strikeXHere = prompt(`${offensePlayer.name}, choose an x-value (0-3) to strike.`);
+     let strikeYHere = prompt(`${offensePlayer.name}, choose a y-value (0-3) to strike.`);
  
-     let coordinate = currentPlayer.gameBoard[strikeXHere][strikeYHere];
+     let coordinate = defensePlayer.gameBoard[strikeXHere][strikeYHere];
      
  
    if (coordinate === 1){ 
-     currentPlayer.gameBoard[strikeXHere][strikeYHere] = 0;
-     currentPlayer.shipCount--;
-     alert("Hit!");
+     defensePlayer.gameBoard[strikeXHere][strikeYHere] = 0;
+     defensePlayer.shipCount--;
+     alert("Hit!" + "by" + offensePlayer.name);
    }
    else{
      alert("Miss!")
    }
-   let message = "";
-     if (currentPlayer.shipCount === 0){
-       alert("end of game");
-       message = `The winner is ${currentPlayer}!`;
+     if (defensePlayer.shipCount === 0){
+       alert("End of the game");
+       message = `The winner is ${offensePlayer.name}!`;
        break;
      }
  } while(i < 33)
